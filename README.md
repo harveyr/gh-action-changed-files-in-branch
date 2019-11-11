@@ -1,0 +1,1 @@
+A modified version of https://github.com/actions/typescript-action
