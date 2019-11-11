@@ -1,38 +1,25 @@
 import * as core from '@actions/core'
-import * as exec from '@actions/exec'
-
-import { filteredFiles, parseExtensions, trimPrefix } from './util'
+import { hasExtension, isNotNodeModule } from './filters'
+import { diffFiles, findParentCommitSha } from './git'
+import { normalizedExtension, parseExtensions, trimPrefix } from './util'
 
 async function run(): Promise<void> {
   const baseBranch = core.getInput('base-branch')
-  const extensions = parseExtensions(core.getInput('extensions'))
-
-  let stdout = ''
-  let stderr = ''
-  await exec.exec(
-    'git',
-    ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
-    {
-      listeners: {
-        stdout: (data: Buffer): void => {
-          stdout += data.toString()
-        },
-        stderr: (data: Buffer): void => {
-          stderr += data.toString()
-        },
-      },
-    },
+  const extensions = parseExtensions(core.getInput('extensions')).map(
+    normalizedExtension,
   )
-  if (stderr.trim()) {
-    return core.setFailed('stderr was not empty')
-  }
 
-  const allFiles = stdout.trim().split('\n')
-  allFiles.sort()
+  const parentSha = await findParentCommitSha(baseBranch)
+  const allFiles = await diffFiles(parentSha)
 
-  const filtered = filteredFiles(allFiles, extensions).map(f => {
-    return trimPrefix(f, core.getInput('trim-prefix'))
-  })
+  const filtered = allFiles
+    .filter(isNotNodeModule)
+    .filter(fp => {
+      return hasExtension(fp, extensions)
+    })
+    .map(fp => {
+      return trimPrefix(fp, core.getInput('trim-prefix'))
+    })
 
   core.setOutput('files', filtered.join(' '))
 }
