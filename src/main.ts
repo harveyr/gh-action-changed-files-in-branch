@@ -1,40 +1,43 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
+import { captureOutput } from './exec'
+
 import { filteredFiles, parseExtensions, trimPrefix } from './util'
 
 async function run(): Promise<void> {
   const baseBranch = core.getInput('base-branch')
   const extensions = parseExtensions(core.getInput('extensions'))
 
-  let stdout = ''
-  let stderr = ''
-  await exec.exec(
-    'git',
-    ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
-    {
-      listeners: {
-        stdout: (data: Buffer): void => {
-          stdout += data.toString()
-        },
-        stderr: (data: Buffer): void => {
-          stderr += data.toString()
-        },
-      },
-    },
-  )
-  if (stderr.trim()) {
-    return core.setFailed('stderr was not empty')
-  }
-
-  const allFiles = stdout.trim().split('\n')
-  allFiles.sort()
-
+  const parentSha = await findParentCommitSha(baseBranch)
+  const allFiles = await diffFiles(parentSha)
   const filtered = filteredFiles(allFiles, extensions).map(f => {
     return trimPrefix(f, core.getInput('trim-prefix'))
   })
-
   core.setOutput('files', filtered.join(' '))
+}
+
+async function diffFiles(parentSha: string): Promise<string[]> {
+  const { stdout } = await captureOutput(
+    'git',
+    ['diff', '--name-only', '--diff-filter=ACMRT', parentSha, 'HEAD'],
+    { failOnStderr: true },
+  )
+  const result = stdout.trim().split('\n')
+  result.sort()
+  return result
+}
+
+async function findParentCommitSha(baseBranch: string): Promise<string> {
+  const { stdout, stderr } = await captureOutput('git', [
+    'merge-base',
+    `origin/${baseBranch}`,
+    `HEAD`,
+  ])
+  if (stderr) {
+    throw new Error('command failed (stderr not empty)')
+  }
+  return stdout
 }
 
 run().catch(err => {
