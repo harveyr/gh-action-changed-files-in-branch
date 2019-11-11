@@ -6,8 +6,6 @@ async function run() {
   let stdout = ''
   let stderr = ''
 
-  console.log('Diffing against branch %s', baseBranch)
-
   await exec.exec(
     'git',
     ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
@@ -23,8 +21,12 @@ async function run() {
     }
   )
 
-  console.log('stdout', stdout)
-  console.log('stderr', stderr)
+  if (stderr.trim()) {
+    return core.setFailed('stderr was not empty')
+  }
+
+  const allFiles = stdout.trim().split('\n')
+  allFiles.sort()
 }
 
 run().catch(err => {
