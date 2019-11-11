@@ -11,6 +11,7 @@ async function run(): Promise<void> {
   const allFiles = await diffFiles(parentSha)
 
   let filtered = allFiles.filter(isNotNodeModule)
+  console.log('FIXME: filtered out node modules', filtered)
   filtered = filesWithExtensions(allFiles, extensions).map(f => {
     return trimPrefix(f, core.getInput('trim-prefix'))
   })
