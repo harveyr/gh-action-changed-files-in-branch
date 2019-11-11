@@ -1,5 +1,4 @@
 import * as path from 'path'
-import { normalizedExtension } from './util'
 
 export function isNotNodeModule(path: string): boolean {
   return Boolean(
@@ -9,17 +8,12 @@ export function isNotNodeModule(path: string): boolean {
   )
 }
 
-export function filesWithExtensions(
-  files: string[],
-  extensions: string[],
-): string[] {
+export function hasExtension(fp: string, extensions: string[]): boolean {
   if (!extensions.length) {
-    return files
+    return true
   }
-
-  extensions = extensions.map(normalizedExtension)
-
-  return files.filter(f => {
-    return extensions.includes(path.extname(f))
-  })
+  if (!fp) {
+    return false
+  }
+  return extensions.includes(path.extname(fp))
 }

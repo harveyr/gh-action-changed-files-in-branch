@@ -1,4 +1,4 @@
-import { filesWithExtensions, isNotNodeModule } from '../src/filters'
+import { hasExtension, isNotNodeModule } from '../src/filters'
 
 test('is not node module', async () => {
   expect(isNotNodeModule('asdf.ts')).toBe(true)
@@ -8,36 +8,19 @@ test('is not node module', async () => {
 })
 
 test('filtered files: empty cases', async () => {
-  expect(filesWithExtensions([], [])).toEqual([])
-  expect(filesWithExtensions([], ['.js'])).toEqual([])
+  expect(hasExtension('', [])).toEqual(true)
 })
 
-test('filtered files: no extensions provided returns full list', async () => {
-  expect(filesWithExtensions(['apple.py', 'banana.js'], [])).toEqual([
-    'apple.py',
-    'banana.js',
-  ])
+test('filtered files: no extensions provided returns true', async () => {
+  expect(hasExtension('apple.py', [])).toBe(true)
 })
 
 test('filtered files: single extension filter', async () => {
-  expect(filesWithExtensions(['apple.py', 'banana.js'], ['.py'])).toEqual([
-    'apple.py',
-  ])
-  // test extension without the dot
-  expect(filesWithExtensions(['apple.py', 'banana.js'], ['py'])).toEqual([
-    'apple.py',
-  ])
-  // test multiple files returned
-  expect(
-    filesWithExtensions(['apple.py', 'banana.js', 'key_lime.py'], ['.py']),
-  ).toEqual(['apple.py', 'key_lime.py'])
+  expect(hasExtension('apple.py', ['.py'])).toBe(true)
+  expect(hasExtension('apple.py', ['.js'])).toBe(false)
+  expect(hasExtension('apple.js', ['.py'])).toBe(false)
 })
 
 test('filtered files: multiple extensions filter', async () => {
-  expect(
-    filesWithExtensions(
-      ['apple.py', 'banana.js', 'key_lime.py', 'teeth.ts'],
-      ['.py', 'ts'],
-    ),
-  ).toEqual(['apple.py', 'key_lime.py', 'teeth.ts'])
+  expect(hasExtension('apple.py', ['.py', '.ts'])).toBe(true)
 })
