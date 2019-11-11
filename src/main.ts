@@ -1,19 +1,39 @@
-import * as core from '@actions/core';
-import {wait} from './wait'
+import * as core from '@actions/core'
+import * as exec from '@actions/exec'
 
-async function run() {
-  try {
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
+import { filteredFiles, parseExtensions } from './util'
 
-    core.debug((new Date()).toTimeString())
-    await wait(parseInt(ms, 10));
-    core.debug((new Date()).toTimeString())
+async function run(): Promise<void> {
+  const baseBranch = core.getInput('base-branch')
+  const extensions = parseExtensions(core.getInput('extensions'))
 
-    core.setOutput('time', new Date().toTimeString());
-  } catch (error) {
-    core.setFailed(error.message);
+  let stdout = ''
+  let stderr = ''
+  await exec.exec(
+    'git',
+    ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
+    {
+      listeners: {
+        stdout: (data: Buffer): void => {
+          stdout += data.toString()
+        },
+        stderr: (data: Buffer): void => {
+          stderr += data.toString()
+        },
+      },
+    },
+  )
+  if (stderr.trim()) {
+    return core.setFailed('stderr was not empty')
   }
+
+  const allFiles = stdout.trim().split('\n')
+  allFiles.sort()
+
+  const filtered = filteredFiles(allFiles, extensions)
+  core.setOutput('files', filtered.join(' '))
 }
 
-run();
+run().catch(err => {
+  core.setFailed(`${err}`)
+})

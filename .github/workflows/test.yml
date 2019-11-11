@@ -1,20 +1,30 @@
 name: "Test typescript-action"
-on:
-  pull_request:
-  push:
-    branches:
-      - master
-      - 'releases/*'
-
+on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        version: 12.x
+
     - run: npm ci
+
     - run: npm run build
+
     - run: npm test
-    - uses: ./
-      with: 
-        milliseconds: 1000
+
+    - name: ESLint everything
+      run: npx eslint src/**.ts
+
+    - id: run
+      uses: ./
+      with:
+        base-branch: master
+        extensions: .ts
+
+    - name: Print results
+      run: echo "${{ steps.run.outputs.files }}"
