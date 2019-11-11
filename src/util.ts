@@ -36,3 +36,9 @@ export function parseExtensions(input?: string): string[] {
     })
     .map(normalizedExtension)
 }
+
+export function trimPrefix(path: string, prefix?: string): string {
+  if (path && prefix && path.indexOf(prefix) === 0)
+    return path.slice(prefix.length)
+  return path
+}
