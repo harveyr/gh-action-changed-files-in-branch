@@ -10,7 +10,7 @@ async function run() {
 
   await exec.exec(
     'git',
-    ['diff', '--name-only', '--diff-filter=ACMRT', baseBranch],
+    ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
     {
       listeners: {
         stdout: (data: Buffer) => {
