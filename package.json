@@ -1,8 +1,8 @@
 {
-  "name": "replace-me",
+  "name": "gh-action-changed-files-in-branch",
   "version": "0.0.0",
   "private": true,
-  "description": "FIXME: REPLACE ME",
+  "description": "Github Action to output changed files in branch",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/fixme:replace"
   },
-  "author": "FIXME:",
+  "author": "Harvey Rogers",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.0",
