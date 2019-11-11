@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 
-import { filteredFiles, parseExtensions } from './util'
+import { filteredFiles, parseExtensions, trimPrefix } from './util'
 
 async function run(): Promise<void> {
   const baseBranch = core.getInput('base-branch')
@@ -30,7 +30,10 @@ async function run(): Promise<void> {
   const allFiles = stdout.trim().split('\n')
   allFiles.sort()
 
-  const filtered = filteredFiles(allFiles, extensions)
+  const filtered = filteredFiles(allFiles, extensions).map(f => {
+    return trimPrefix(f, core.getInput('trim-prefix'))
+  })
+
   core.setOutput('files', filtered.join(' '))
 }
 
