@@ -1,5 +1,3 @@
-import * as path from 'path'
-
 export function normalizedExtension(ext: string): string {
   if (!ext) {
     return ext
@@ -8,18 +6,6 @@ export function normalizedExtension(ext: string): string {
     return ext
   }
   return `.${ext}`
-}
-
-export function filteredFiles(files: string[], extensions: string[]): string[] {
-  if (!extensions.length) {
-    return files
-  }
-
-  extensions = extensions.map(normalizedExtension)
-
-  return files.filter(f => {
-    return extensions.includes(path.extname(f))
-  })
 }
 
 export function parseExtensions(input?: string): string[] {
