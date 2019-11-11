@@ -26,8 +26,13 @@ jobs:
     - name: Print results
       run: echo "${{ steps.run.outputs.files }}"
 
-    - name: ESLint
+    # Test an example use case of this action
+    - name: ESLint changed files
       run: npx eslint "${{ steps.run.outputs.files }}"
       if: steps.run.outputs.files
+
+    # Double check that _everything_ looks good
+    - name: ESLint everything
+      run: npx eslint src/**.ts
 
 

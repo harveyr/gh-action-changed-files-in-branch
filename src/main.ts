@@ -3,7 +3,7 @@ import * as exec from '@actions/exec'
 
 import { filteredFiles, parseExtensions } from './util'
 
-async function run() {
+async function run(): Promise<void> {
   const baseBranch = core.getInput('base-branch')
   const extensions = parseExtensions(core.getInput('extensions'))
 
@@ -14,10 +14,10 @@ async function run() {
     ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
     {
       listeners: {
-        stdout: (data: Buffer) => {
+        stdout: (data: Buffer): void => {
           stdout += data.toString()
         },
-        stderr: (data: Buffer) => {
+        stderr: (data: Buffer): void => {
           stderr += data.toString()
         },
       },
