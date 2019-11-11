@@ -1,4 +1,4 @@
-import { filteredFiles } from '../src/util'
+import { filteredFiles, parseExtensions } from '../src/util'
 
 test('filtered files: empty cases', async () => {
   expect(filteredFiles([], [])).toEqual([])
@@ -31,4 +31,12 @@ test('filtered files: multiple extensions filter', async () => {
       ['.py', 'ts'],
     ),
   ).toEqual(['apple.py', 'key_lime.py', 'teeth.ts'])
+})
+
+test('parse extensions', async () => {
+  expect(parseExtensions(undefined)).toEqual([])
+  expect(parseExtensions('')).toEqual([])
+  expect(parseExtensions('js')).toEqual(['.js'])
+  expect(parseExtensions('js  ts')).toEqual(['.js', '.ts'])
+  expect(parseExtensions('js  ts   .py')).toEqual(['.js', '.ts', '.py'])
 })

@@ -21,3 +21,18 @@ export function normalizedExtension(ext: string): string {
   }
   return `.${ext}`
 }
+
+export function parseExtensions(input?: string): string[] {
+  if (!input) return []
+
+  return input
+    .trim()
+    .split(' ')
+    .map(e => {
+      return e.trim()
+    })
+    .filter(e => {
+      return e.length > 0
+    })
+    .map(normalizedExtension)
+}
