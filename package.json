@@ -15,7 +15,8 @@
   "author": "FIXME:",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.0",
+    "@actions/exec": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^24.0.22",

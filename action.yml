@@ -1,10 +1,17 @@
-name: 'Your name here'
-description: 'Provide a description here'
+name: Changed Files in Branch
+description: Output files that have changed in this branch, filtered by extension.
 author: 'Your name or organization here'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  base-branch:
+    description: base branch to diff against
+    required: false
+    default: master
+  extensions:
+    description: extensions to filter
+    required: false
+ouputs:
+  files:
+    description: Changed files, filtered by extension if applicable
 runs:
-  using: 'node12'
-  main: 'lib/main.js'
+  using: node12
+  main: lib/main.js

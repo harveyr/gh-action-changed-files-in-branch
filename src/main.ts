@@ -1,19 +1,28 @@
-import * as core from '@actions/core';
-import {wait} from './wait'
+import * as core from '@actions/core'
+import * as exec from '@actions/exec'
 
 async function run() {
-  try {
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
+  const baseBranch = core.getInput('base-branch')
+  let stdout = ''
+  let stderr = ''
 
-    core.debug((new Date()).toTimeString())
-    await wait(parseInt(ms, 10));
-    core.debug((new Date()).toTimeString())
+  console.log('Diffing against branch %s', baseBranch)
 
-    core.setOutput('time', new Date().toTimeString());
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+  exec.exec('git', ['diff', '--name-only', '--diff-filter=ACMRT', baseBranch], {
+    listeners: {
+      stdout: (data: Buffer) => {
+        stdout += data.toString()
+      },
+      stderr: (data: Buffer) => {
+        stderr += data.toString()
+      }
+    }
+  })
+
+  console.log('stdout', stdout)
+  console.log('stderr', stderr)
 }
 
-run();
+run().catch(err => {
+  core.setFailed(`${err}`)
+})
