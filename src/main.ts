@@ -31,7 +31,6 @@ async function run() {
   allFiles.sort()
 
   const filtered = filteredFiles(allFiles, extensions)
-  console.log('filtered', filtered)
   core.setOutput('files', filtered.join(' '))
 }
 
