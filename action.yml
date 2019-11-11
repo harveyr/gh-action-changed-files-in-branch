@@ -9,6 +9,9 @@ inputs:
   extensions:
     description: extensions to filter
     required: false
+  trim-prefix:
+    description: trim a prefix off the output file paths
+    required: false
 ouputs:
   files:
     description: Changed files, filtered by extension if applicable

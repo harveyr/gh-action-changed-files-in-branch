@@ -6,6 +6,7 @@ import { filteredFiles, parseExtensions } from './util'
 async function run(): Promise<void> {
   const baseBranch = core.getInput('base-branch')
   const extensions = parseExtensions(core.getInput('extensions'))
+  const trimPrefix = core.getInput('trim-prefix')
 
   let stdout = ''
   let stderr = ''
@@ -31,6 +32,7 @@ async function run(): Promise<void> {
   allFiles.sort()
 
   const filtered = filteredFiles(allFiles, extensions)
+
   core.setOutput('files', filtered.join(' '))
 }
 
