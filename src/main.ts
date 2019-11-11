@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import { diffFiles, findParentCommitSha } from './git'
-import { filteredFiles, parseExtensions, trimPrefix } from './util'
+import { parseExtensions, trimPrefix } from './util'
+import { filesWithExtensions, isNotNodeModule } from './filters'
 
 async function run(): Promise<void> {
   const baseBranch = core.getInput('base-branch')
@@ -8,9 +9,12 @@ async function run(): Promise<void> {
 
   const parentSha = await findParentCommitSha(baseBranch)
   const allFiles = await diffFiles(parentSha)
-  const filtered = filteredFiles(allFiles, extensions).map(f => {
+
+  let filtered = allFiles.filter(isNotNodeModule)
+  filtered = filesWithExtensions(allFiles, extensions).map(f => {
     return trimPrefix(f, core.getInput('trim-prefix'))
   })
+
   core.setOutput('files', filtered.join(' '))
 }
 
