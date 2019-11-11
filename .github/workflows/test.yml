@@ -17,6 +17,8 @@ jobs:
 
     - run: npm test
 
+    - run: npx eslint src/**.ts
+
     - id: run
       uses: ./
       with:
