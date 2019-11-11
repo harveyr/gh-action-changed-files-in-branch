@@ -14,7 +14,10 @@ jobs:
     - run: npm ci
     - run: npm run build
     # - run: npm test
-    - uses: ./
+    - id: run
+      uses: ./
       with:
         base-branch: master
         extensions: .ts
+    - name: Print results
+      run: echo "${{ steps.run.outputs.files }}"
