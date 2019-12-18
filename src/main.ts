@@ -24,7 +24,7 @@ async function run(): Promise<void> {
       'diff',
       '--name-only',
       '--diff-filter=ACMRT',
-      baseBranch,
+      'origin/master',
     ])
     parentSha = await git.findParentCommitSha(
       currentBranch,
