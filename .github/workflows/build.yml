@@ -17,7 +17,7 @@ jobs:
       - id: run
         uses: ./
         with:
-          base-branch: origin/master
+          base-branch: master
           extensions: .ts
 
   build:
