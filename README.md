@@ -2,6 +2,9 @@
 
 Github Action that outputs files that have changed in this branch.
 
+**Requires use of [actions/checkout](https://github.com/actions/checkout) v2+.**
+That versions checks out a branch instead of a detached head.
+
 ## Caveats
 
 Note that, at this time, you cannot simply use this ouput as an argument to a
