@@ -4,7 +4,7 @@ import * as git from './git'
 import { normalizedExtension, parseExtensions, trimPrefix } from './util'
 
 async function run(): Promise<void> {
-  const baseBranch = core.getInput('base-branch')
+  const baseBranch = core.getInput('base_branch')
   const extensions = parseExtensions(core.getInput('extensions')).map(
     normalizedExtension,
   )
@@ -17,6 +17,8 @@ async function run(): Promise<void> {
     return
   }
 
+  await git.fetch()
+
   const parentSha = await git.findParentCommitSha(currentBranch, baseBranch)
   const allFiles = await git.diffFiles(parentSha)
 
@@ -26,7 +28,7 @@ async function run(): Promise<void> {
       return hasExtension(fp, extensions)
     })
     .map(fp => {
-      return trimPrefix(fp, core.getInput('trim-prefix'))
+      return trimPrefix(fp, core.getInput('trim_prefix'))
     })
 
   core.setOutput('files', filtered.join(' '))

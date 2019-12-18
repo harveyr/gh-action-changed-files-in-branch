@@ -1,5 +1,9 @@
 import * as kit from '@harveyr/github-actions-kit'
 
+export async function fetch(): Promise<void> {
+  await kit.execAndCapture('git', ['fetch'], { failOnStdErr: true })
+}
+
 export async function getCurrentBranch(): Promise<string> {
   const { stdout } = await kit.execAndCapture(
     'git',
