@@ -23,6 +23,13 @@ export function parseExtensions(input?: string): string[] {
     .map(normalizedExtension)
 }
 
+export function remoteBranch(branch: string): string {
+  const prefix = `origin/`
+  if (branch.indexOf(prefix) === 0) return branch
+
+  return prefix + branch
+}
+
 export function trimPrefix(path: string, prefix?: string): string {
   if (path && prefix && path.indexOf(prefix) === 0)
     return path.slice(prefix.length)

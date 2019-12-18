@@ -1,7 +1,13 @@
 import * as core from '@actions/core'
 import { hasExtension, isNotNodeModule } from './filters'
 import * as git from './git'
-import { normalizedExtension, parseExtensions, trimPrefix } from './util'
+import { Params } from './types'
+import {
+  normalizedExtension,
+  parseExtensions,
+  remoteBranch,
+  trimPrefix,
+} from './util'
 import * as kit from '@harveyr/github-actions-kit'
 
 async function getParentForDetachedHead(baseBranch: string): Promise<string> {
@@ -15,17 +21,30 @@ async function run(): Promise<void> {
   )
 
   const currentBranch = await git.getCurrentBranch()
+
+  const params: Params = {
+    remote: 'origin',
+    baseBranch,
+    currentBranch,
+  }
+
   let parentSha = ''
   if (currentBranch === 'HEAD') {
-    parentSha = await getParentForDetachedHead(baseBranch)
+    parentSha = await getParentForDetachedHead(params.baseBranch)
+    const stuff = await kit.execAndCapture(
+      'git',
+      ['diff', '--name-only', '--diff-filter=ACMRT', remoteBranch(baseBranch)],
+      { failOnStdErr: false },
+    )
+    console.log('FIXME: stuff1!', stuff)
   } else {
     await git.fetch(baseBranch)
     const stuff = await kit.execAndCapture(
       'git',
-      ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
+      ['diff', '--name-only', '--diff-filter=ACMRT', remoteBranch(baseBranch)],
       { failOnStdErr: false },
     )
-    console.log('FIXME: stuff!', stuff)
+    console.log('FIXME: stuff2!', stuff)
     parentSha = await git.findParentCommitSha(
       currentBranch,
       `origin/${baseBranch}`,
