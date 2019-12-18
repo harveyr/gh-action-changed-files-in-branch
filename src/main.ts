@@ -3,6 +3,10 @@ import { hasExtension, isNotNodeModule } from './filters'
 import * as git from './git'
 import { normalizedExtension, parseExtensions, trimPrefix } from './util'
 
+async function getParentForDetachedHead(baseBranch: string): Promise<string> {
+  return git.findParentCommitSha(`origin/${baseBranch}`, 'HEAD')
+}
+
 async function run(): Promise<void> {
   const baseBranch = core.getInput('base_branch')
   const extensions = parseExtensions(core.getInput('extensions')).map(
@@ -10,16 +14,14 @@ async function run(): Promise<void> {
   )
 
   const currentBranch = await git.getCurrentBranch()
+  let parentSha = ''
   if (currentBranch === 'HEAD') {
-    core.setFailed(
-      'Detached HEAD detected. Are you using v2+ of actions/checkout?',
-    )
-    return
+    parentSha = await getParentForDetachedHead(baseBranch)
+  } else {
+    await git.fetch()
+    parentSha = await git.findParentCommitSha(currentBranch, baseBranch)
   }
 
-  await git.fetch()
-
-  const parentSha = await git.findParentCommitSha(currentBranch, baseBranch)
   const allFiles = await git.diffFiles(parentSha)
 
   const filtered = allFiles

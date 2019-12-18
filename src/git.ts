@@ -14,12 +14,12 @@ export async function getCurrentBranch(): Promise<string> {
 }
 
 export async function findParentCommitSha(
-  currentBranch: string,
-  baseBranch: string,
+  commit1: string,
+  commit2: string,
 ): Promise<string> {
   const { stdout } = await kit.execAndCapture(
     'git',
-    ['merge-base', currentBranch, baseBranch],
+    ['merge-base', commit1, commit2],
     { failOnStdErr: true },
   )
   return stdout
