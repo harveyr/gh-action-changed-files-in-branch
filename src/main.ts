@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import { hasExtension, isNotNodeModule } from './filters'
 import * as git from './git'
 import { normalizedExtension, parseExtensions, trimPrefix } from './util'
+import * as kit from '@harveyr/github-actions-kit'
 
 async function getParentForDetachedHead(baseBranch: string): Promise<string> {
   return git.findParentCommitSha(`origin/${baseBranch}`, 'HEAD')
@@ -19,6 +20,12 @@ async function run(): Promise<void> {
     parentSha = await getParentForDetachedHead(baseBranch)
   } else {
     await git.fetch(baseBranch)
+    await kit.execAndCapture('git', [
+      'diff',
+      '--name-only',
+      '--diff-filter=ACMRT',
+      baseBranch,
+    ])
     parentSha = await git.findParentCommitSha(
       currentBranch,
       `origin/${baseBranch}`,
