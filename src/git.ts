@@ -9,10 +9,13 @@ export async function getCurrentBranch(): Promise<string> {
   return stdout
 }
 
-export async function findParentCommitSha(branch: string): Promise<string> {
+export async function findParentCommitSha(
+  currentBranch: string,
+  baseBranch: string,
+): Promise<string> {
   const { stdout } = await kit.execAndCapture(
     'git',
-    ['merge-base', branch, 'master'],
+    ['merge-base', currentBranch, baseBranch],
     { failOnStdErr: true },
   )
   return stdout

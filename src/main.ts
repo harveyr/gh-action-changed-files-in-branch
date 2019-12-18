@@ -9,15 +9,15 @@ async function run(): Promise<void> {
     normalizedExtension,
   )
 
-  const branch = await git.getCurrentBranch()
-  if (branch === 'HEAD') {
+  const currentBranch = await git.getCurrentBranch()
+  if (currentBranch === 'HEAD') {
     core.setFailed(
-      'Detached HEAD detected. Are you using v2+ of action/checkout?',
+      'Detached HEAD detected. Are you using v2+ of actions/checkout?',
     )
     return
   }
 
-  const parentSha = await git.findParentCommitSha(baseBranch)
+  const parentSha = await git.findParentCommitSha(currentBranch, baseBranch)
   const allFiles = await git.diffFiles(parentSha)
 
   const filtered = allFiles
