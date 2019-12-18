@@ -30,3 +30,8 @@ jobs:
 
       - name: Print results
         run: echo "${{ steps.run.outputs.files }}"
+
+      - uses: harveyr/gh-action-publish@releases/v0
+        with:
+          dirs: dist
+        if: contains(github.ref, 'refs/heads/versions/' )
