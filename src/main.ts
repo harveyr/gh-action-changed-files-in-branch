@@ -19,7 +19,7 @@ async function run(): Promise<void> {
     parentSha = await getParentForDetachedHead(baseBranch)
   } else {
     await git.fetch(baseBranch)
-    parentSha = await git.findParentCommitSha(currentBranch, baseBranch)
+    parentSha = await git.findParentCommitSha(baseBranch, currentBranch)
   }
 
   const allFiles = await git.diffFiles(parentSha)
