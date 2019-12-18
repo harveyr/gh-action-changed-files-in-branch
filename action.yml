@@ -17,4 +17,4 @@ ouputs:
     description: Changed files, filtered by extension if applicable
 runs:
   using: node12
-  main: lib/main.js
+  main: dist/index.js
