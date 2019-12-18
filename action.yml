@@ -2,14 +2,14 @@ name: Changed Files in Branch
 description: Output files that have changed in this branch, filtered by extension.
 author: 'Your name or organization here'
 inputs:
-  base-branch:
+  base_branch:
     description: base branch to diff against
     required: false
     default: master
   extensions:
     description: extensions to filter
     required: false
-  trim-prefix:
+  trim_prefix:
     description: trim a prefix off the output file paths
     required: false
 ouputs:
