@@ -39,14 +39,14 @@ jobs:
       - run: npm test
 
       - name: ESLint everything
-        run: npx eslint src/**.ts
+        run: npx eslint src/**/**.ts __tests__/**/**.ts
 
       - run: npm run dist
 
       - id: run
         uses: ./
         with:
-          base-branch: origin/master
+          base-branch: master
           extensions: .ts
 
       - name: Print results
