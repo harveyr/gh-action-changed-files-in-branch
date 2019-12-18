@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import { hasExtension, isNotNodeModule } from './filters'
-import { diffFiles, findParentCommitSha } from './git'
+import * as git from './git'
 import { normalizedExtension, parseExtensions, trimPrefix } from './util'
 
 async function run(): Promise<void> {
@@ -9,8 +9,16 @@ async function run(): Promise<void> {
     normalizedExtension,
   )
 
-  const parentSha = await findParentCommitSha(baseBranch)
-  const allFiles = await diffFiles(parentSha)
+  const branch = await git.getCurrentBranch()
+  if (branch === 'HEAD') {
+    core.setFailed(
+      'Detached HEAD detected. Are you using v2+ of action/checkout?',
+    )
+    return
+  }
+
+  const parentSha = await git.findParentCommitSha(baseBranch)
+  const allFiles = await git.diffFiles(parentSha)
 
   const filtered = allFiles
     .filter(isNotNodeModule)

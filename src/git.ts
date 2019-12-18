@@ -1,22 +1,28 @@
-import { captureOutput } from './exec'
+import * as kit from '@harveyr/github-actions-kit'
 
-export async function findParentCommitSha(baseBranch: string): Promise<string> {
-  const { stdout, stderr } = await captureOutput('git', [
-    'merge-base',
-    `origin/${baseBranch}`,
-    `HEAD`,
-  ])
-  if (stderr) {
-    throw new Error('command failed (stderr not empty)')
-  }
+export async function getCurrentBranch(): Promise<string> {
+  const { stdout } = await kit.execAndCapture(
+    'git',
+    ['rev-parse', '--abbrev-ref', 'HEAD'],
+    { failOnStdErr: true },
+  )
+  return stdout
+}
+
+export async function findParentCommitSha(branch: string): Promise<string> {
+  const { stdout } = await kit.execAndCapture(
+    'git',
+    ['merge-base', branch, 'master'],
+    { failOnStdErr: true },
+  )
   return stdout
 }
 
 export async function diffFiles(parentSha: string): Promise<string[]> {
-  const { stdout } = await captureOutput(
+  const { stdout } = await kit.execAndCapture(
     'git',
     ['diff', '--name-only', '--diff-filter=ACMRT', parentSha, 'HEAD'],
-    { failOnStderr: true },
+    { failOnStdErr: true },
   )
   const result = stdout.trim().split('\n')
   result.sort()
