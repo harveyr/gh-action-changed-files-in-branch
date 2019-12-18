@@ -20,12 +20,12 @@ async function run(): Promise<void> {
     parentSha = await getParentForDetachedHead(baseBranch)
   } else {
     await git.fetch(baseBranch)
-    await kit.execAndCapture('git', [
-      'diff',
-      '--name-only',
-      '--diff-filter=ACMRT',
-      'origin/master',
-    ])
+    const stuff = await kit.execAndCapture(
+      'git',
+      ['diff', '--name-only', '--diff-filter=ACMRT', `origin/${baseBranch}`],
+      { failOnStdErr: false },
+    )
+    console.log('FIXME: stuff!', stuff)
     parentSha = await git.findParentCommitSha(
       currentBranch,
       `origin/${baseBranch}`,
