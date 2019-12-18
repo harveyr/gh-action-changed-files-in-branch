@@ -21,14 +21,39 @@ async function diffFiles(branch: RemoteBranch): Promise<string[]> {
   })
 }
 
+async function getCurrentRef(): Promise<string> {
+  const { stdout } = await kit.execAndCapture(
+    'git',
+    ['rev-parse', '--abbrev-ref', 'HEAD'],
+    { failOnStdErr: true },
+  )
+  return stdout
+}
+
+async function fetch(param: RemoteBranch): Promise<void> {
+  const { remote, branch } = param
+  await kit.execAndCapture('git', ['fetch', remote, branch])
+}
+
 async function run(): Promise<void> {
   const remote = 'origin'
   const baseBranch = core.getInput('base_branch')
   const extensions = parseExtensions(core.getInput('extensions')).map(
     normalizedExtension,
   )
+  const remoteBranch: RemoteBranch = {
+    remote,
+    branch: baseBranch,
+  }
 
-  const allFiles = await diffFiles({ remote, branch: baseBranch })
+  const currentRef = await getCurrentRef()
+  if (currentRef !== 'HEAD') {
+    // My git wisdom is not deep enough to know why we need to fetch the branch
+    // only if we're not in a detached HEAD state.
+    await fetch(remoteBranch)
+  }
+
+  const allFiles = await diffFiles(remoteBranch)
 
   const filtered = allFiles
     .filter(isNotNodeModule)
