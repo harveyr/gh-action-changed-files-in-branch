@@ -1,10 +1,29 @@
 name: CI
 on: [push]
 jobs:
-  build:
+  # Build with old actions/checkout version
+  build-legacy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - run: npm run dist
+
+      - id: run
+        uses: ./
+        with:
+          base-branch: origin/master
+          extensions: .ts
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
