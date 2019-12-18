@@ -1,3 +1,5 @@
+import { RemoteBranch } from './types'
+
 export function normalizedExtension(ext: string): string {
   if (!ext) {
     return ext
@@ -23,9 +25,12 @@ export function parseExtensions(input?: string): string[] {
     .map(normalizedExtension)
 }
 
-export function remoteBranch(branch: string): string {
-  const prefix = `origin/`
-  if (branch.indexOf(prefix) === 0) return branch
+export function remoteBranch(param: RemoteBranch): string {
+  const { remote, branch } = param
+  const prefix = `${remote}/`
+  if (branch.indexOf(prefix) === 0) {
+    return branch
+  }
 
   return prefix + branch
 }

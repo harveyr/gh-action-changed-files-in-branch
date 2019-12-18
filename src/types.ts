@@ -1,5 +1,4 @@
-export interface Params {
+export interface RemoteBranch {
   remote: string
-  baseBranch: string
-  currentBranch: string
+  branch: string
 }
