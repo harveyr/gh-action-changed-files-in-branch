@@ -84,7 +84,8 @@ async function run(): Promise<void> {
 
   const mergeBase = await getMergeBase({
     currentRef,
-    baseRef: baseBranch,
+    baseRef: remoteBranchString(remoteBranch),
+    // baseRef: baseBranch,
   })
   const allFiles = await diffFiles({ currentRef, baseRef: mergeBase })
 
