@@ -43,7 +43,7 @@ async function getCurrentRef(): Promise<string> {
 
 async function fetch(param: RemoteBranch): Promise<void> {
   const { remote, branch } = param
-  await kit.execAndCapture('git', ['fetch', remote, branch])
+  await kit.execAndCapture('git', ['fetch', '--set-upstream', remote, branch])
 }
 
 async function run(): Promise<void> {
@@ -67,7 +67,7 @@ async function run(): Promise<void> {
 
   const mergeBase = await getMergeBase({
     currentRef,
-    baseRef: remoteBranchString(remoteBranch),
+    baseRef: baseBranch,
   })
   const allFiles = await diffFiles({ currentRef, baseRef: mergeBase })
 
