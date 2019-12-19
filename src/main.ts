@@ -43,7 +43,21 @@ async function getCurrentRef(): Promise<string> {
 
 async function fetch(param: RemoteBranch): Promise<void> {
   const { remote, branch } = param
-  await kit.execAndCapture('git', ['fetch', '--set-upstream', remote, branch])
+  await kit.execAndCapture('git', ['fetch', remote, branch])
+}
+
+/**
+ * Checkout the comparison branch so that we can diff against it.
+ *
+ * See, e.g.: https://stackoverflow.com/a/9537923
+ */
+async function checkoutAndReturn(param: RemoteBranch): Promise<void> {
+  await kit.execAndCapture('git', [
+    'checkout',
+    '--track',
+    remoteBranchString(param),
+  ])
+  await kit.execAndCapture('git', ['checkout', '-'])
 }
 
 async function run(): Promise<void> {
@@ -64,6 +78,7 @@ async function run(): Promise<void> {
     )
   }
   await fetch(remoteBranch)
+  await checkoutAndReturn(remoteBranch)
 
   const mergeBase = await getMergeBase({
     currentRef,
