@@ -46,20 +46,6 @@ async function fetch(param: RemoteBranch): Promise<void> {
   await kit.execAndCapture('git', ['fetch', remote, branch])
 }
 
-/**
- * Checkout the comparison branch so that we can diff against it.
- *
- * See, e.g.: https://stackoverflow.com/a/9537923
- */
-async function checkoutAndReturn(param: RemoteBranch): Promise<void> {
-  await kit.execAndCapture('git', [
-    'checkout',
-    '--track',
-    remoteBranchString(param),
-  ])
-  await kit.execAndCapture('git', ['checkout', '-'])
-}
-
 async function run(): Promise<void> {
   const remote = 'origin'
   const baseBranch = core.getInput('base_branch')
@@ -78,14 +64,11 @@ async function run(): Promise<void> {
     )
   }
   await kit.execAndCapture('git', ['pull', '--unshallow'])
-  await kit.execAndCapture('git', ['log'])
   await fetch(remoteBranch)
-  // await checkoutAndReturn(remoteBranch)
 
   const mergeBase = await getMergeBase({
     currentRef,
     baseRef: remoteBranchString(remoteBranch),
-    // baseRef: baseBranch,
   })
   const allFiles = await diffFiles({ currentRef, baseRef: mergeBase })
 
