@@ -21,6 +21,12 @@ jobs:
           base-branch: master
           extensions: .ts
 
+      - name: run a second time to test that we don't re-run the pull
+        uses: ./
+        with:
+          base-branch: master
+          extensions: .ts
+
       - name: Print results
         run: echo "${{ steps.run.outputs.files }}"
 

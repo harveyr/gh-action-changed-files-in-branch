@@ -41,6 +41,21 @@ async function getCurrentRef(): Promise<string> {
   return stdout
 }
 
+/**
+ * If we're in a shallow checkout, pull the rest of the history so we can
+ * compare against the base branch.
+ */
+async function pullUnshallow(): Promise<void> {
+  const isShallow = await kit.execAndCapture(
+    'git',
+    ['rev-parse', '--is-shallow-repository'],
+    { failOnStdErr: true },
+  )
+  if (isShallow.stdout === 'true') {
+    await kit.execAndCapture('git', ['pull', '--unshallow'])
+  }
+}
+
 async function fetch(param: RemoteBranch): Promise<void> {
   const { remote, branch } = param
   await kit.execAndCapture('git', ['fetch', remote, branch])
@@ -63,7 +78,7 @@ async function run(): Promise<void> {
       'Detached HEAD detected. Are you using actions/checkout v2+?',
     )
   }
-  await kit.execAndCapture('git', ['pull', '--unshallow'])
+  await pullUnshallow()
   await fetch(remoteBranch)
 
   const mergeBase = await getMergeBase({
