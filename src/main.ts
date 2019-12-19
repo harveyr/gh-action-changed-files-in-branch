@@ -1,18 +1,24 @@
 import * as core from '@actions/core'
 import * as kit from '@harveyr/github-actions-kit'
 import { hasExtension, isNotNodeModule } from './filters'
-import { RemoteBranch } from './types'
-import {
-  normalizedExtension,
-  parseExtensions,
-  remoteBranch,
-  trimPrefix,
-} from './util'
+import { DiffParam, RemoteBranch } from './types'
+import { normalizedExtension, parseExtensions, trimPrefix } from './util'
 
-async function diffFiles(branch: RemoteBranch): Promise<string[]> {
+async function getMergeBase(param: DiffParam): Promise<string> {
+  const { currentRef, baseRef } = param
   const cmd = await kit.execAndCapture(
     'git',
-    ['diff', '--name-only', '--diff-filter=ACMRT', remoteBranch(branch)],
+    ['merge-base', currentRef, baseRef],
+    { failOnStdErr: true },
+  )
+  return cmd.stdout
+}
+
+async function diffFiles(param: DiffParam): Promise<string[]> {
+  const { currentRef, baseRef } = param
+  const cmd = await kit.execAndCapture(
+    'git',
+    ['diff', '--name-only', '--diff-filter=ACMRT', currentRef, baseRef],
     { failOnStdErr: false },
   )
   const out = cmd.stdout + cmd.stderr
@@ -47,13 +53,15 @@ async function run(): Promise<void> {
   }
 
   const currentRef = await getCurrentRef()
-  if (currentRef !== 'HEAD') {
-    // My git wisdom is not deep enough to know why we need to fetch the branch
-    // only if we're not in a detached HEAD state.
-    await fetch(remoteBranch)
+  if (currentRef === 'HEAD') {
+    throw new Error(
+      'Detached HEAD detected. Are you using actions/checkout v2+?',
+    )
   }
+  await fetch(remoteBranch)
 
-  const allFiles = await diffFiles(remoteBranch)
+  const mergeBase = await getMergeBase({ currentRef, baseRef: baseBranch })
+  const allFiles = await diffFiles({ currentRef, baseRef: mergeBase })
 
   const filtered = allFiles
     .filter(isNotNodeModule)
