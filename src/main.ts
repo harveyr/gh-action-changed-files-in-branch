@@ -54,6 +54,8 @@ async function pullUnshallow(): Promise<void> {
     ['rev-parse', '--is-shallow-repository'],
     { failOnStdErr: true },
   )
+  // This pull will fail if we run it against a non-shallow checkout, so we
+  // check first.
   if (isShallow.stdout === 'true') {
     await kit.execAndCapture('git', ['pull', '--unshallow'])
   }
