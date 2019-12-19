@@ -13,13 +13,6 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
-
-      - run: npm test
-
-      - name: ESLint everything
-        run: npx eslint src/**/**.ts __tests__/**/**.ts
-
       - run: npm run dist
 
       - id: run
@@ -30,6 +23,11 @@ jobs:
 
       - name: Print results
         run: echo "${{ steps.run.outputs.files }}"
+
+      - run: npm test
+
+      - name: ESLint everything
+        run: npx eslint src/**/**.ts __tests__/**/**.ts
 
       - uses: harveyr/gh-action-publish@releases/v0
         with:

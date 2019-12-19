@@ -2,7 +2,12 @@ import * as core from '@actions/core'
 import * as kit from '@harveyr/github-actions-kit'
 import { hasExtension, isNotNodeModule } from './filters'
 import { DiffParam, RemoteBranch } from './types'
-import { normalizedExtension, parseExtensions, trimPrefix } from './util'
+import {
+  normalizedExtension,
+  parseExtensions,
+  remoteBranchString,
+  trimPrefix,
+} from './util'
 
 async function getMergeBase(param: DiffParam): Promise<string> {
   const { currentRef, baseRef } = param
@@ -60,7 +65,10 @@ async function run(): Promise<void> {
   }
   await fetch(remoteBranch)
 
-  const mergeBase = await getMergeBase({ currentRef, baseRef: baseBranch })
+  const mergeBase = await getMergeBase({
+    currentRef,
+    baseRef: remoteBranchString(remoteBranch),
+  })
   const allFiles = await diffFiles({ currentRef, baseRef: mergeBase })
 
   const filtered = allFiles
