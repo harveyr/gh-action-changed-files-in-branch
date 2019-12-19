@@ -44,6 +44,9 @@ async function getCurrentRef(): Promise<string> {
 /**
  * If we're in a shallow checkout, pull the rest of the history so we can
  * compare against the base branch.
+ *
+ * This _seems_ to be necessary, but I arrived here through trial and error. So
+ * if there's a better way, please educate me.
  */
 async function pullUnshallow(): Promise<void> {
   const isShallow = await kit.execAndCapture(
