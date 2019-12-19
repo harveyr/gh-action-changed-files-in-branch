@@ -77,9 +77,10 @@ async function run(): Promise<void> {
       'Detached HEAD detected. Are you using actions/checkout v2+?',
     )
   }
+  await kit.execAndCapture('git', ['pull', '--unshallow'])
   await kit.execAndCapture('git', ['log'])
   await fetch(remoteBranch)
-  await checkoutAndReturn(remoteBranch)
+  // await checkoutAndReturn(remoteBranch)
 
   const mergeBase = await getMergeBase({
     currentRef,
