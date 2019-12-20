@@ -25,6 +25,9 @@ jobs:
       - name: Print .ts results
         run: echo "${{ steps.run-ts.outputs.files }}"
 
+      # This second run serves not only to test different output, but also the
+      # logic that determines whether we do an unshallow pull. We should do that
+      # pull only on the first run--not on the second.
       - id: run-json
         name: Run for .json files
         uses: ./
