@@ -15,21 +15,22 @@ jobs:
 
       - run: npm run dist
 
-      - id: run
-        name: Run
+      - id: run-ts
+        name: Run for .ts files
         uses: ./
         with:
           base-branch: master
           extensions: .ts
 
-      - name: Run a second time to test that we don't re-run the pull
+      - id: run-json
+        name: Run for .json files
         uses: ./
         with:
-          base-branch: master
-          extensions: .ts
+          # Don't provide the base-branch here. Default should be master.
+          extensions: .json
 
       - name: Print results
-        run: echo "${{ steps.run.outputs.files }}"
+        run: echo "${{ steps.run-ts.outputs.files }}"
 
       - run: npm test
 

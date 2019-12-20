@@ -68,8 +68,8 @@ async function fetch(param: RemoteBranch): Promise<void> {
 
 async function run(): Promise<void> {
   const remote = 'origin'
-  const baseBranch = core.getInput('base_branch')
-  const extensions = parseExtensions(core.getInput('extensions')).map(
+  const baseBranch = kit.getInputSafe('base_branch')
+  const extensions = parseExtensions(kit.getInputSafe('extensions')).map(
     normalizedExtension,
   )
   const remoteBranch: RemoteBranch = {
@@ -98,7 +98,7 @@ async function run(): Promise<void> {
       return hasExtension(fp, extensions)
     })
     .map(fp => {
-      return trimPrefix(fp, core.getInput('trim_prefix'))
+      return trimPrefix(fp, kit.getInputSafe('trim_prefix'))
     })
 
   core.setOutput('files', filtered.join(' '))
