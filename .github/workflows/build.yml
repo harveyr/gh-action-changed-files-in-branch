@@ -22,6 +22,9 @@ jobs:
           base-branch: master
           extensions: .ts
 
+      - name: Print .ts results
+        run: echo "${{ steps.run-ts.outputs.files }}"
+
       - id: run-json
         name: Run for .json files
         uses: ./
@@ -29,8 +32,8 @@ jobs:
           # Don't provide the base-branch here. Default should be master.
           extensions: .json
 
-      - name: Print results
-        run: echo "${{ steps.run-ts.outputs.files }}"
+      - name: Print .json results
+        run: echo "${{ steps.run-json.outputs.files }}"
 
       - run: npm test
 
