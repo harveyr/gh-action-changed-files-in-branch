@@ -83,7 +83,8 @@ async function run(): Promise<void> {
   if (useApi) {
     // const commitIds = await github.getCommits({ githubToken })
     // console.log('commitIds', commitIds)
-    await github.compareCommits({ githubToken })
+    const files = await github.compareCommitFiles({ githubToken, baseBranch })
+    console.log('FIXME: files', files)
     return
   }
 

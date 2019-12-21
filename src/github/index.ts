@@ -1,5 +1,5 @@
 import * as github from '@actions/github'
-import { GetCommitsResponse } from './types'
+import { GetCommitsResponse, ChangedFile } from './types'
 
 interface ApiParam {
   githubToken: string
@@ -20,6 +20,31 @@ export function getContext(): Repo {
     ...github.context.repo,
     branch: github.context.ref.replace('refs/heads/', ''),
   }
+}
+
+export interface CompareCommitParam extends ApiParam {
+  baseBranch: string
+}
+
+export async function compareCommitFiles(
+  param: CompareCommitParam,
+): Promise<ChangedFile[]> {
+  const { githubToken, baseBranch } = param
+  const { owner, repo, branch } = getContext()
+  const octokit = new github.GitHub(githubToken)
+
+  const result = await octokit.repos.compareCommits({
+    repo,
+    owner,
+    base: baseBranch,
+    head: branch,
+  })
+
+  return result.data.files.map(f => {
+    // I'm sure there's a cleaner way to do this. Forgive me.
+    const { status, filename } = f
+    return { status, filename }
+  })
 }
 
 export async function getCommits(param: ApiParam): Promise<string[]> {
@@ -66,30 +91,12 @@ export async function getCommits(param: ApiParam): Promise<string[]> {
     hasNextPage,
     endCursor,
   } = result.repository.ref.target.history.pageInfo
+
   console.log(
-    'FIXME: Fetched %s ids. hasNextPage',
+    'Fetched %s ids. pageInfo: %s',
     commitIds.length,
-    hasNextPage,
-    endCursor,
+    JSON.stringify({ hasNextPage, endCursor }),
   )
 
-  // TODO: cursor
-
   return commitIds
-}
-
-export async function compareCommits(param: ApiParam) {
-  const { githubToken } = param
-  const { owner, repo, branch } = getContext()
-
-  const octokit = new github.GitHub(githubToken)
-
-  const result = await octokit.repos.compareCommits({
-    repo,
-    owner,
-    base: 'master',
-    head: branch,
-  })
-
-  console.log('FIXME: result\n', JSON.stringify(result, null, 2))
 }

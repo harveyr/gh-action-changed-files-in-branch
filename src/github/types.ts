@@ -15,3 +15,8 @@ export interface GetCommitsResponse {
     }
   }
 }
+
+export interface ChangedFile {
+  filename: string
+  status: string
+}
