@@ -128,7 +128,7 @@ async function run(): Promise<void> {
     files = await diffFilesViaShell({ remoteBranch })
   }
 
-  const filtered = files
+  const result = files
     .filter(isNotNodeModule)
     .filter(fp => {
       return hasExtension(fp, extensions)
@@ -137,7 +137,8 @@ async function run(): Promise<void> {
       return trimPrefix(fp, kit.getInputSafe('trim-prefix'))
     })
 
-  core.setOutput('files', filtered.join(' '))
+  console.log('Found %s changed files', result.length)
+  core.setOutput('files', result.join(' '))
 }
 
 run().catch(err => {
