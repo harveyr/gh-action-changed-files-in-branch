@@ -59,12 +59,23 @@ export async function getCommits(param: ApiParam): Promise<string[]> {
     },
   )) as GetCommitsResponse
 
-  result
-
-  // TODO: cursor
-  return result.repository.ref.target.history.edges.map(edge => {
+  const commitIds = result.repository.ref.target.history.edges.map(edge => {
     return edge.node.oid
   })
+  const {
+    hasNextPage,
+    endCursor,
+  } = result.repository.ref.target.history.pageInfo
+  console.log(
+    'FIXME: Fetched %s ids. hasNextPage',
+    commitIds.length,
+    hasNextPage,
+    endCursor,
+  )
+
+  // TODO: cursor
+
+  return commitIds
 }
 
 // export async function getCommit(param: ApiParam) {
