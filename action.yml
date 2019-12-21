@@ -2,16 +2,28 @@ name: Changed Files in Branch
 description: Output files that have changed in this branch, filtered by extension.
 author: 'Your name or organization here'
 inputs:
-  base_branch:
+  remote:
+    description: remote name
+    required: false
+    default: origin
+  base-branch:
     description: base branch to diff against
     required: false
     default: master
   extensions:
     description: extensions to filter
     required: false
-  trim_prefix:
+  trim-prefix:
     description: trim a prefix off the output file paths
     required: false
+  use-api:
+    description: use the GitHub API to fetch the commit history rather than shelling out to git
+    required: false
+    default: 'false'
+  github-token:
+    description: GitHub API token. Required if use-api is true.
+    required: false
+    default: ''
 ouputs:
   files:
     description: Changed files, filtered by extension if applicable

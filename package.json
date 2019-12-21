@@ -18,7 +18,8 @@
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.1",
-    "@harveyr/github-actions-kit": "0.0.5"
+    "@actions/github": "2.0.0",
+    "@harveyr/github-actions-kit": "0.0.7"
   },
   "devDependencies": {
     "@types/jest": "^24.0.22",
