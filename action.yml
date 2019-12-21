@@ -2,7 +2,7 @@ name: Changed Files in Branch
 description: Output files that have changed in this branch, filtered by extension.
 author: 'Your name or organization here'
 inputs:
-  base_branch:
+  base-branch:
     description: base branch to diff against
     required: false
     default: master

@@ -88,7 +88,7 @@ export async function compareCommits(param: ApiParam) {
     repo,
     owner,
     base: 'master',
-    head: 'branch',
+    head: branch,
   })
 
   console.log('FIXME: result\n', JSON.stringify(result, null, 2))
