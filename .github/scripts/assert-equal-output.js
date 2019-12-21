@@ -1,3 +1,6 @@
+/**
+ * Helps test results in CI. See usage there.
+ */
 function main() {
   const inputA = process.env.INPUT_A
   const inputB = process.env.INPUT_B
@@ -23,6 +26,8 @@ function main() {
       throw new Error(`Index ${i}: ${a} !== ${b}`)
     }
   }
+
+  console.log('Looks good 👍')
 }
 
 if (require.main === module) {

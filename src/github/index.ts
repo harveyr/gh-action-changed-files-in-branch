@@ -45,6 +45,12 @@ export async function compareCommitFiles(
   })
 }
 
+/**
+ * Get a list of commit IDs in the current branch.
+ *
+ * We're not currently using this, but it appears to work. I'll leave it here
+ * for now in case we want it later.
+ */
 export async function getCommits(param: ApiParam): Promise<string[]> {
   const { githubToken } = param
   const { owner, repo, branch } = getContext()
