@@ -30,6 +30,7 @@ jobs:
         with:
           base-branch: master
           extensions: .ts
+          use-api: 'false'
 
       - name: Assert equal
         run: node .github/scripts/assert-equal-output.js

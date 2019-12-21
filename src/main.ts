@@ -26,7 +26,7 @@ async function diffFiles(param: DiffParam): Promise<string[]> {
   const { currentRef, baseRef } = param
   const cmd = await kit.execAndCapture(
     'git',
-    ['diff', '--name-only', '--diff-filter=ACMRT', currentRef, baseRef],
+    ['diff', '--name-only', currentRef, baseRef],
     { failOnStdErr: false },
   )
   const out = cmd.stdout + cmd.stderr
