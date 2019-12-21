@@ -78,7 +78,18 @@ export async function getCommits(param: ApiParam): Promise<string[]> {
   return commitIds
 }
 
-// export async function getCommit(param: ApiParam) {
-//   const { githubToken } = param
-//   const { owner, repo, branch } = getContext()
-// }
+export async function compareCommits(param: ApiParam) {
+  const { githubToken } = param
+  const { owner, repo, branch } = getContext()
+
+  const octokit = new github.GitHub(githubToken)
+
+  const result = await octokit.repos.compareCommits({
+    repo,
+    owner,
+    base: 'master',
+    head: 'branch',
+  })
+
+  console.log('FIXME: result\n', JSON.stringify(result, null, 2))
+}

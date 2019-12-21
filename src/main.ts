@@ -81,8 +81,9 @@ async function run(): Promise<void> {
   }
 
   if (useApi) {
-    const commitIds = await github.getCommits({ githubToken })
-    console.log('commitIds', commitIds)
+    // const commitIds = await github.getCommits({ githubToken })
+    // console.log('commitIds', commitIds)
+    await github.compareCommits({ githubToken })
     return
   }
 
