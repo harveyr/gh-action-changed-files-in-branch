@@ -103,7 +103,7 @@ async function diffFilesViaApi(param: CompareCommitParam): Promise<string[]> {
 }
 
 async function run(): Promise<void> {
-  const remote = 'origin'
+  const remote = kit.getInputSafe('remote')
   const useApi = kit.getInputSafe('use-api') === 'true'
   const githubToken = kit.getInputSafe('github-token')
   const baseBranch = kit.getInputSafe('base-branch')

@@ -2,10 +2,12 @@ function main() {
   const inputA = process.env.INPUT_A
   const inputB = process.env.INPUT_B
 
+  console.log('Inputs A: %s', inputA)
+  console.log('Inputs B: %s', inputB)
+
   const arrays = [inputA, inputB].map(s => {
     return s.split(' ')
   })
-
   console.log('Arrays:\n- %s\n- %s', inputA, inputB)
 
   if (arrays[0].length !== arrays[1].length) {
