@@ -6,4 +6,5 @@ export interface DiffParam {
 export interface RemoteBranch {
   remote: string
   branch: string
+  deleted: string
 }
