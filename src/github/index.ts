@@ -1,5 +1,5 @@
 import * as github from '@actions/github'
-import { GetCommitsResponse, ChangedFile } from './types'
+import { GetCommitsResponse, ChangedFile, ChangedFileStatus } from './types'
 
 interface ApiParam {
   githubToken: string
@@ -41,9 +41,7 @@ export async function compareCommitFiles(
   })
 
   return result.data.files.map(f => {
-    // I'm sure there's a cleaner way to do this. Forgive me.
-    const { status, filename } = f
-    return { status, filename }
+    return { filename: f.filename, status: f.status as ChangedFileStatus }
   })
 }
 

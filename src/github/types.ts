@@ -16,7 +16,9 @@ export interface GetCommitsResponse {
   }
 }
 
+export type ChangedFileStatus = 'added' | 'modified'
+
 export interface ChangedFile {
   filename: string
-  status: string
+  status: ChangedFileStatus
 }
