@@ -10,6 +10,8 @@ import {
   trimPrefix,
 } from './util'
 
+import { CompareCommitParam } from './github'
+
 async function getMergeBase(param: DiffParam): Promise<string> {
   const { currentRef, baseRef } = param
   const cmd = await kit.execAndCapture(
@@ -67,27 +69,12 @@ async function fetch(param: RemoteBranch): Promise<void> {
   await kit.execAndCapture('git', ['fetch', remote, branch])
 }
 
-async function run(): Promise<void> {
-  const remote = 'origin'
-  const useApi = kit.getInputSafe('use-api') === 'true'
-  const githubToken = kit.getInputSafe('github-token')
-  const baseBranch = kit.getInputSafe('base-branch')
-  const extensions = parseExtensions(kit.getInputSafe('extensions')).map(
-    normalizedExtension,
-  )
-  const remoteBranch: RemoteBranch = {
-    remote,
-    branch: baseBranch,
-  }
+interface ShellDiffParam {
+  remoteBranch: RemoteBranch
+}
 
-  if (useApi) {
-    // const commitIds = await github.getCommits({ githubToken })
-    // console.log('commitIds', commitIds)
-    const files = await github.compareCommitFiles({ githubToken, baseBranch })
-    console.log('FIXME: files', files)
-    return
-  }
-
+async function diffFilesViaShell(param: ShellDiffParam): Promise<string[]> {
+  const { remoteBranch } = param
   const currentRef = await getCurrentRef()
   if (currentRef === 'HEAD') {
     throw new Error(
@@ -101,9 +88,47 @@ async function run(): Promise<void> {
     currentRef,
     baseRef: remoteBranchString(remoteBranch),
   })
-  const allFiles = await diffFiles({ currentRef, baseRef: mergeBase })
+  return diffFiles({ currentRef, baseRef: mergeBase })
+}
 
-  const filtered = allFiles
+async function diffFilesViaApi(param: CompareCommitParam): Promise<string[]> {
+  const files = await github.compareCommitFiles(param)
+  return files
+    .filter(f => {
+      return f.status !== 'deleted'
+    })
+    .map(f => {
+      return f.filename
+    })
+}
+
+async function run(): Promise<void> {
+  const remote = 'origin'
+  const useApi = kit.getInputSafe('use-api') === 'true'
+  const githubToken = kit.getInputSafe('github-token')
+  const baseBranch = kit.getInputSafe('base-branch')
+  const extensions = parseExtensions(kit.getInputSafe('extensions')).map(
+    normalizedExtension,
+  )
+
+  let files: string[] = []
+
+  if (useApi) {
+    if (!githubToken) {
+      throw new Error('use-api is enabled but github token not provided')
+    }
+    files = await diffFilesViaApi({ githubToken, baseBranch })
+    // const commitIds = await github.getCommits({ githubToken })
+    // console.log('commitIds', commitIds)
+  } else {
+    const remoteBranch: RemoteBranch = {
+      remote,
+      branch: baseBranch,
+    }
+    files = await diffFilesViaShell({ remoteBranch })
+  }
+
+  const filtered = files
     .filter(isNotNodeModule)
     .filter(fp => {
       return hasExtension(fp, extensions)
