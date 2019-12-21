@@ -15,6 +15,15 @@ jobs:
 
       - run: npm run dist
 
+      - id: run-api
+        name: Run with API
+        uses: ./
+        with:
+          base-branch: master
+          extensions: .ts
+          use-api: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - id: run-ts
         name: Run for .ts files
         uses: ./

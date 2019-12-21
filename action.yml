@@ -9,9 +9,17 @@ inputs:
   extensions:
     description: extensions to filter
     required: false
-  trim_prefix:
+  trim-prefix:
     description: trim a prefix off the output file paths
     required: false
+  use-api:
+    description: use the GitHub API to fetch the commit history rather than shelling out to git
+    required: false
+    default: 'false'
+  github-token:
+    description: GitHub API token. Required if use-api is true.
+    required: false
+    default: ''
 ouputs:
   files:
     description: Changed files, filtered by extension if applicable

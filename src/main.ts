@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as kit from '@harveyr/github-actions-kit'
+import * as github from './github'
 import { hasExtension, isNotNodeModule } from './filters'
 import { DiffParam, RemoteBranch } from './types'
 import {
@@ -68,13 +69,20 @@ async function fetch(param: RemoteBranch): Promise<void> {
 
 async function run(): Promise<void> {
   const remote = 'origin'
-  const baseBranch = kit.getInputSafe('base_branch')
+  const useApi = kit.getInputSafe('use-api') === 'true'
+  const githubToken = kit.getInputSafe('github-token')
+  const baseBranch = kit.getInputSafe('base-branch')
   const extensions = parseExtensions(kit.getInputSafe('extensions')).map(
     normalizedExtension,
   )
   const remoteBranch: RemoteBranch = {
     remote,
     branch: baseBranch,
+  }
+
+  if (useApi) {
+    await github.getCommits({ githubToken })
+    return
   }
 
   const currentRef = await getCurrentRef()
@@ -98,7 +106,7 @@ async function run(): Promise<void> {
       return hasExtension(fp, extensions)
     })
     .map(fp => {
-      return trimPrefix(fp, kit.getInputSafe('trim_prefix'))
+      return trimPrefix(fp, kit.getInputSafe('trim-prefix'))
     })
 
   core.setOutput('files', filtered.join(' '))
