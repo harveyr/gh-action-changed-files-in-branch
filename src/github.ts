@@ -46,5 +46,11 @@ export async function getCommits(param: ApiParam) {
     },
   )
 
-  console.log('result for %s:%s branch %s:', owner, repo, branch, result)
+  console.log(
+    'result for %s:%s branch %s:',
+    owner,
+    repo,
+    branch,
+    JSON.stringify(result, null, 2),
+  )
 }
