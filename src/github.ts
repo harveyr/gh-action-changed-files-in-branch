@@ -17,20 +17,18 @@ export async function getCommits(param: ApiParam) {
   const result = await octokit.graphql(
     `
     query($owner: String!, $repo: String!, $branch: String!) {
-      organization(login: $owner) {
-        repository(name: $repo) {
-          ref(qualifiedName: $branch) {
-            target {
-              ... on Commit {
-                history(first: 50) {
-                  pageInfo {
-                    hasNextPage
-                    endCursor
-                  }
-                  edges {
-                    node {
-                      oid
-                    }
+      repository(owner: $owner, name: $repo) {
+        ref(qualifiedName: $branch) {
+          target {
+            ... on Commit {
+              history(first: 50) {
+                pageInfo {
+                  hasNextPage
+                  endCursor
+                }
+                edges {
+                  node {
+                    oid
                   }
                 }
               }
