@@ -9,7 +9,9 @@
 
 ### Added
 
-- `use-api` option
+- `use-api` option to use the GitHub API instead of shelling out to git to do
+  the diffing. The API can be much faster for big repos, but requires your
+  GitHub token.
 
 ### Changed
 

@@ -118,8 +118,6 @@ async function run(): Promise<void> {
       throw new Error('use-api is enabled but github token not provided')
     }
     files = await diffFilesViaApi({ githubToken, baseBranch })
-    // const commitIds = await github.getCommits({ githubToken })
-    // console.log('commitIds', commitIds)
   } else {
     const remoteBranch: RemoteBranch = {
       remote,
