@@ -21,21 +21,22 @@ jobs:
         with:
           base-branch: master
           extensions: .ts
+          use-api: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: run-shell
-        name: Run via shell/git
+      - id: run-git
+        name: Run via git
         uses: ./
         with:
           base-branch: master
           extensions: .ts
-          use-shell: 'true'
+          use-api: 'false'
 
       - name: Assert equal
         run: node .github/scripts/assert-equal-output.js
         env:
           INPUT_A: ${{ steps.run-api.outputs.files }}
-          INPUT_B: ${{ steps.run-shell.outputs.files }}
+          INPUT_B: ${{ steps.run-git.outputs.files }}
 
       # This second run serves not only to test different output, but also the
       # logic that determines whether we do an unshallow pull. We should do that

@@ -104,7 +104,7 @@ async function diffFilesViaApi(param: CompareCommitParam): Promise<string[]> {
 
 async function run(): Promise<void> {
   const remote = kit.getInputSafe('remote')
-  const useShell = kit.getInputSafe('use-shell') === 'true'
+  const useApi = kit.getInputSafe('use-api') === 'true'
   const githubToken = kit.getInputSafe('github-token')
   const baseBranch = kit.getInputSafe('base-branch')
   const extensions = parseExtensions(kit.getInputSafe('extensions')).map(
@@ -113,17 +113,19 @@ async function run(): Promise<void> {
 
   let files: string[] = []
 
-  if (useShell) {
+  if (useApi) {
+    if (!githubToken) {
+      throw new Error('use-api is enabled but github token not provided')
+    }
+    files = await diffFilesViaApi({ githubToken, baseBranch })
+    // const commitIds = await github.getCommits({ githubToken })
+    // console.log('commitIds', commitIds)
+  } else {
     const remoteBranch: RemoteBranch = {
       remote,
       branch: baseBranch,
     }
     files = await diffFilesViaShell({ remoteBranch })
-  } else {
-    if (!githubToken) {
-      throw new Error('use-api is enabled but github token not provided')
-    }
-    files = await diffFilesViaApi({ githubToken, baseBranch })
   }
 
   const result = files

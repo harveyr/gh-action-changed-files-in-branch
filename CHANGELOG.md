@@ -9,8 +9,7 @@
 
 ### Added
 
-- `use-api` option, which is the new default. It is much faster than shelling
-  out to git for big repos.
+- `use-api` option
 
 ### Changed
 
