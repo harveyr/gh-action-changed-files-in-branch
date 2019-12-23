@@ -16,8 +16,8 @@ inputs:
   trim-prefix:
     description: trim a prefix off the output file paths
     required: false
-  use-api:
-    description: use the GitHub API to fetch the commit history rather than shelling out to git
+  use-shell:
+    description: shell out to git instead of using the GitHub API to do the diffing
     required: false
     default: 'false'
   github-token:
