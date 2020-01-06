@@ -12,6 +12,8 @@ test.each([
   ['package.json', '*.json', true],
   ['package.json', 'package.json', true],
   ['package.json', 'package.*', true],
+  ['package.json', 'package*.json', true],
+  ['package-lock.json', 'package*.json', true],
 ])('glob: %s -> %s == %s', (...args: (string | boolean)[]) => {
   const filename = args[0].toString()
   const glob = args[1].toString()
