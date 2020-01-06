@@ -95,8 +95,8 @@ async function diffFilesViaApi(param: CompareCommitParam): Promise<string[]> {
   const files = await github.compareCommitFiles(param)
   return files
     .filter(f => {
-      console.log('FIXME: debug', f.filename, f.status)
-      return f.status !== 'deleted'
+      core.debug(`File ${f.filename} has status ${f.status}`)
+      return f.status !== 'removed'
     })
     .map(f => {
       return f.filename
