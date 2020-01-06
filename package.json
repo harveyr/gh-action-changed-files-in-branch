@@ -19,10 +19,12 @@
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.1",
     "@actions/github": "2.0.0",
-    "@harveyr/github-actions-kit": "0.0.7"
+    "@harveyr/github-actions-kit": "0.0.7",
+    "minimatch": "3.0.4"
   },
   "devDependencies": {
     "@types/jest": "^24.0.22",
+    "@types/minimatch": "^3.0.3",
     "@types/node": "^12.12.7",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",

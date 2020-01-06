@@ -20,7 +20,7 @@ jobs:
         uses: ./
         with:
           base-branch: master
-          extensions: .ts
+          globs: src/**/**.ts __tests__/**/**.ts
           use-api: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

@@ -1,12 +1,4 @@
-import { parseExtensions, trimPrefix } from '../src/util'
-
-test('parse extensions', async () => {
-  expect(parseExtensions(undefined)).toEqual([])
-  expect(parseExtensions('')).toEqual([])
-  expect(parseExtensions('js')).toEqual(['.js'])
-  expect(parseExtensions('js  ts')).toEqual(['.js', '.ts'])
-  expect(parseExtensions('js  ts   .py')).toEqual(['.js', '.ts', '.py'])
-})
+import { trimPrefix } from '../src/util'
 
 test('trim prefix', async () => {
   expect(trimPrefix('')).toEqual('')

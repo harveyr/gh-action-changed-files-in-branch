@@ -10,8 +10,8 @@ inputs:
     description: base branch to diff against
     required: false
     default: master
-  extensions:
-    description: extensions to filter
+  globs:
+    description: globs to filter
     required: false
   trim-prefix:
     description: trim a prefix off the output file paths

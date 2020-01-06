@@ -1,14 +1,10 @@
 import * as core from '@actions/core'
 import * as kit from '@harveyr/github-actions-kit'
 import * as github from './github'
-import { hasExtension, isNotNodeModule } from './filters'
+import { isNotNodeModule } from './filters'
 import { DiffParam, RemoteBranch } from './types'
-import {
-  normalizedExtension,
-  parseExtensions,
-  remoteBranchString,
-  trimPrefix,
-} from './util'
+import { remoteBranchString, trimPrefix } from './util'
+import { fileMatchesGlobs } from './globs'
 
 import { CompareCommitParam } from './github'
 
@@ -108,9 +104,19 @@ async function run(): Promise<void> {
   const useApi = kit.getInputSafe('use-api') === 'true'
   const githubToken = kit.getInputSafe('github-token')
   const baseBranch = kit.getInputSafe('base-branch')
-  const extensions = parseExtensions(kit.getInputSafe('extensions')).map(
-    normalizedExtension,
-  )
+  const globs = kit
+    .getInputSafe('globs')
+    .split(' ')
+    .map(token => {
+      return token.trim()
+    })
+    .filter(token => {
+      return Boolean(token)
+    })
+
+  if (!globs.length) {
+    throw new Error('No globs provided')
+  }
 
   let files: string[] = []
 
@@ -129,8 +135,8 @@ async function run(): Promise<void> {
 
   const result = files
     .filter(isNotNodeModule)
-    .filter(fp => {
-      return hasExtension(fp, extensions)
+    .filter(filename => {
+      return fileMatchesGlobs({ filename, globs })
     })
     .map(fp => {
       return trimPrefix(fp, kit.getInputSafe('trim-prefix'))
