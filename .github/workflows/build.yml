@@ -46,7 +46,7 @@ jobs:
         uses: ./
         with:
           # Don't provide the base-branch here. Default should be master.
-          extensions: .json
+          globs: '**/**.json'
 
       - name: Print .json results
         run: echo "${{ steps.run-json.outputs.files }}"
