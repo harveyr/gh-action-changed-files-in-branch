@@ -29,7 +29,7 @@ jobs:
         uses: ./
         with:
           base-branch: master
-          extensions: .ts
+          globs: src/**/**.ts __tests__/**/**.ts
           use-api: 'false'
 
       - name: Assert equal
