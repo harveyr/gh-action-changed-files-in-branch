@@ -1,6 +1,6 @@
 name: Changed Files in Branch
 description: Output files that have changed in this branch, filtered by extension.
-author: 'Your name or organization here'
+author: Harvey Rogers
 inputs:
   remote:
     description: remote name
