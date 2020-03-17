@@ -1,5 +1,13 @@
 # Changelog
 
+## v4
+
+### Changed
+
+- Changed the `extensions` input to `globs`. Uses the
+  [minimatch](https://www.npmjs.com/package/minimatch) library to match changed
+  files against globs.
+
 ## v3
 
 ### Fixed
