@@ -1,5 +1,7 @@
 # gh-action-changed-files-in-branch
 
+**NOT MAINTAINED.**
+
 Github Action that outputs files that have changed in this branch.
 
 **Requires use of [actions/checkout](https://github.com/actions/checkout) v2+.**
